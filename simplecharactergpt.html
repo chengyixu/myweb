@@ -4,7 +4,6 @@
 </div>
 
 <textarea id="userInput" style="width: 100%; height: 100px; margin-top: 10px;" placeholder="输入你的消息..."></textarea>
-<button onclick="pasteToTextarea()" style="margin-top: 10px;">粘贴</button>
 <button onclick="sendMessage()" style="margin-top: 10px;">发送</button>
 
 <!-- JavaScript 逻辑 -->
@@ -21,13 +20,6 @@ function appendMessage(role, content) {
     messageDiv.textContent = role + ": " + content;
     chatbox.appendChild(messageDiv);
     chatbox.scrollTop = chatbox.scrollHeight; // 自动滚动到底部
-}
-
-// 新增的粘贴函数
-function pasteToTextarea() {
-    navigator.clipboard.readText()
-        .then(clipText => userInput.value += clipText)
-        .catch(err => alert('无法访问剪贴板'));
 }
 
 async function sendMessage() {
