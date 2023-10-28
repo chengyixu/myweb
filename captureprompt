@@ -3,7 +3,10 @@
     <!-- 聊天记录将在这里显示 -->
 </div>
 
-<textarea id="userInput" style="width: 100%; height: 100px; margin-top: 10px;" placeholder="以及内置左边的提示词了，无需再次复制粘贴"></textarea>
+<textarea id="userInput" style="width: 100%; height: 100px; margin-top: 10px;" placeholder="已经内置左边的提示词了，无需再次复制粘贴。"></textarea>
+
+<button onclick="copyPromptToClipboard()">复制提示词到剪贴板</button>
+
 <button onclick="pasteToTextarea()" style="margin-top: 10px;">粘贴</button>
 <button onclick="sendMessage()" style="margin-top: 10px;">发送</button>
 
@@ -14,6 +17,26 @@ const userInput = document.getElementById('userInput');
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 const OPENAI_API_KEY = "xxxxx"; // 请替换为你的API密钥
 let messages = []; // 用于存储聊天记录
+	
+
+function copyPromptToClipboard() {
+    const promptContentElement = document.querySelector('.theme-box.wp-posts-content');
+    if (promptContentElement) {
+        const promptContent = promptContentElement.innerText;
+
+        const textArea = document.createElement('textarea');
+        textArea.value = promptContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        alert('提示词已复制到剪贴板');
+    } else {
+        alert('未找到提示词内容');
+    }
+}
+
 
 function appendMessage(role, content) {
     const messageDiv = document.createElement('div');
@@ -22,6 +45,15 @@ function appendMessage(role, content) {
     chatbox.appendChild(messageDiv);
     chatbox.scrollTop = chatbox.scrollHeight; // 自动滚动到底部
 }
+	
+	function getRandomName() {
+    const names = ["幸运大王", "小幸运星", "普普通通", "倒霉蛋"];
+    const randomIndex = Math.floor(Math.random() * names.length);
+    return names[randomIndex];
+}
+	
+	    const randomUserName = getRandomName();  // get a random name
+
 
 // 新增的粘贴函数
 function pasteToTextarea() {
@@ -58,7 +90,7 @@ async function sendMessage() {
         content: userMessage
     });
 
-    appendMessage('user', userMessage);
+    appendMessage(randomUserName, userMessage);
 
     // 使用 OpenAI API 获取 GPT 的回复
     fetch(OPENAI_API_URL, {
