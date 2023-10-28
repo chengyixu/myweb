@@ -1,0 +1,55 @@
+<?php
+class Sample {
+    const API_KEY = "xxx";
+    const SECRET_KEY = "xxx";
+
+    public function run() {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token={$this->getAccessToken()}",
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER  => false,
+            CURLOPT_SSL_VERIFYHOST  => false,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            
+            CURLOPT_POSTFIELDS =>'{"messages":[{"role":"user","content":"请介绍一下你自己"},{"role":"assistant","content":"我是百度公司开发的人工智能语言模型，我的中文名是文心一言，可以协助您完成范围广泛的任务并提供有关各种主题的信息，比如回答问题，提供定义和解释及建议。如果您有任何问题，请随时向我提问。"},{"role":"user","content":"我在上海，周末可以去哪里玩？"},{"role":"assistant","content":"上海是一个充满活力和文化氛围的城市，有很多适合周末游玩的地方。以下是几个值得推荐的地方：\\n\\n1. 上海科技馆：上海科技馆是中国大陆最大的科技馆之一，有许多互动展览和科学实验室，可以让您了解科技的发展历史和最新成果。\\n2. 上海博物馆：上海博物馆是一座集艺术、历史和文化于一体的博物馆，有许多精美的艺术品和文物，可以让您深入了解中国和世界的文化历史。\\n3. 外滩：外滩是上海的标志性景点之一，有许多高楼大厦和繁华的商业街区，是欣赏黄浦江美景和城市风貌的好去处。\\n4. 上海迪士尼乐园：上海迪士尼乐园是世界上最大的迪士尼主题公园之一，有许多精彩的游乐项目和演出，可以让您尽情享受娱乐和欢乐。\\n5. 上海野生动物园：上海野生动物园是一个以自然保护为主题的野生动物园，有许多珍稀动物和植物，可以让您近距离接触大自然。\\n\\n这些地方都是上海周末游玩的好去处，可以根据自己的兴趣和需求选择合适的行程。"},{"role":"user","content":"上海有哪些美食？"},{"role":"assistant","content":"上海有许多美食，其中比较著名的有蟹壳黄、小笼包、白斩鸡等。蟹壳黄又叫做小麻糕，是上海的特色小吃之一，馅包含荠菜、白糖、葱油、豆沙四种小料，刚出炉时就像一个金黄的蟹壳，因此被称作蟹壳黄。小笼包是上海人爱吃的小吃，热乎乎的，蒸的是上海的风味。白斩鸡是使用三黄鸡制成的，因为在烹制过程中不加任何调味料只使用白水煮制，所以叫做白斩鸡。刚出锅的白斩鸡鸡皮金黄诱人，鸡肉白嫩紧致，稍稍变凉后蘸点酱油香醋吃，鸡皮爽脆、肥而不腻，鸡肉鲜嫩可口，咸甜适中，非常美味。\\n\\n此外，上海还有许多其他美食，如汤团、葱油饼、馄饨等。这些美食都具有上海独特的口味和文化特色，可以品尝到上海的美食文化。"}]}',
+    
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
+    }
+    
+    /**
+     * 使用 AK，SK 生成鉴权签名（Access Token）
+     * @return string 鉴权签名信息（Access Token）
+     */
+    private function getAccessToken(){
+        $curl = curl_init();
+        $postData = array(
+            'grant_type' => 'client_credentials',
+            'client_id' => self::API_KEY,
+            'client_secret' => self::SECRET_KEY
+        );
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://aip.baidubce.com/oauth/2.0/token',
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_SSL_VERIFYPEER  => false,
+            CURLOPT_SSL_VERIFYHOST  => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POSTFIELDS => http_build_query($postData)
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $rtn = json_decode($response);
+        return $rtn->access_token;
+    }
+}
+
+$rtn = (new Sample())->run();
+print_r($rtn);
