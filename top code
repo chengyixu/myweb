@@ -1,0 +1,11 @@
+css
+
+.payvip-icon {
+    background: #AAB8AB; /* Set the flat color as the background */
+    text-shadow: none; /* Remove the text-shadow as there should be none */
+    font-weight: normal;
+    position: relative;
+    color: #004400; /* Set the text color to super dark green */
+    border: none;
+    overflow: hidden;
+}
